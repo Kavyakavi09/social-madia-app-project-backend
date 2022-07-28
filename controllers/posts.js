@@ -1,4 +1,5 @@
 import PostMessage from '../models/postModel.js';
+import mongoose from 'mongoose';
 
 export const getPost = async (req, res) => {
   try {
@@ -40,6 +41,34 @@ export const updatePost = async (req, res) => {
   const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
 
   await PostMessage.findByIdAndUpdate({ _id: id }, updatedPost, { new: true });
+
+  res.json(updatedPost);
+};
+
+export const deletePost = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No post with id: ${id}`);
+
+  await PostMessage.findByIdAndRemove({ _id: id });
+
+  res.json({ message: 'Post deleted successfully.' });
+};
+
+export const likePost = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send(`No post with id: ${id}`);
+
+  const post = await PostMessage.findById({ _id: id });
+
+  const updatedPost = await PostMessage.findByIdAndUpdate(
+    { _id: id },
+    { likeCount: post.likeCount + 1 },
+    { new: true }
+  );
 
   res.json(updatedPost);
 };
