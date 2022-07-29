@@ -16,7 +16,7 @@ dotenv.config();
 // // To connected with routes
 app.use('/api/posts', postRoutes);
 
-let port = process.env.PORT || 4003;
+let port = process.env.PORT || 4010;
 
 app.listen(port, async () => {
   console.log(`The App is running on the port ${port}`);
