@@ -15,8 +15,8 @@ app.use(cors());
 dotenv.config();
 
 // // To connected with routes
-app.use('/api/posts', postRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/posts', postRoutes);
 
 let port = process.env.PORT || 4010;
 
