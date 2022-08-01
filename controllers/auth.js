@@ -11,7 +11,7 @@ const securePassword = async (password) => {
 export const signup = async (req, res) => {
   try {
     const { email, password, confirmPassword, firstName, lastName } = req.body;
-    const existingUser = await userData.findOne({ email: email });
+    const existingUser = await userData.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: 'User Already exist' });
 
@@ -31,7 +31,7 @@ export const signup = async (req, res) => {
       { expiresIn: '1h' }
     );
     return res.status(201).json({
-      messageg: 'successfully signed up',
+      message: 'successfully signed up',
       token: token,
       user: result,
     });
@@ -41,18 +41,15 @@ export const signup = async (req, res) => {
   }
 };
 
-export const signin = async (res, req) => {
-  const { email, password } = req.body;
+export const signin = async (req, res) => {
   try {
-    const existingUser = await userData.findOne({ email: email });
+    const { email, password } = req.body;
+    const existingUser = await userData.findOne({ email });
 
     if (!existingUser)
       return res.status(401).json({ message: 'Invalid Credentials' });
 
-    let isPasswordMatch = await bcrypt.compare(
-      password,
-      existingUser.hashedPassword
-    );
+    let isPasswordMatch = await bcrypt.compare(password, existingUser.password);
     if (isPasswordMatch) {
       let token = jwt.sign(
         { email: existingUser.email, id: existingUser._id },
@@ -60,15 +57,14 @@ export const signin = async (res, req) => {
         { expiresIn: '1h' }
       );
       res.status(200).json({
-        messageg: 'successfully logged in',
+        message: 'successfully logged in',
         token: token,
         user: existingUser,
       });
     } else {
-      res.status(401).json({ message: 'Invalid Credentials' });
+      return res.status(401).json({ message: 'Invalid Credentials' });
     }
   } catch (error) {
-    res.status(500).send('Internal server error');
-    console.log('something went wrong', error);
+    return res.status(500).send('Internal server error');
   }
 };

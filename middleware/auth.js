@@ -15,8 +15,10 @@ const auth = async (req, res, next) => {
     }
 
     next();
+    console.log(req.userId);
   } catch (error) {
-    return res.staus(401).json({ message: 'Unauthorized' });
+    console.log(error);
+    return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
