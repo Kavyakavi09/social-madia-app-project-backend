@@ -45,7 +45,7 @@ export const getPostsBySearch = async (req, res) => {
     });
     res.json({ data: posts });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    return res.status(404).json({ message: error.message });
   }
 };
 
